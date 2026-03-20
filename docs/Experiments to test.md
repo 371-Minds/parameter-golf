@@ -1,3 +1,8 @@
+> **Status: Reference — exploratory experiment list**
+> This document is a raw chat export containing a broad list of 10 candidate experiments (E1–E10). It is not the primary build spec. The **Tier 1 build targets** are the 4 benchmarks defined in [Synthetic dataset spec.md](Synthetic%20dataset%20spec.md). For the focused 7-experiment research design, see [Concrete experimental matrix.md](Concrete%20experimental%20matrix.md).
+
+---
+
 Experiments to test whether tiny LLMs show human-like “cognitive overload”
 
 Yes — here’s a concrete way to operationalize your idea instead of leaving it metaphorical.

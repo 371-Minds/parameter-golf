@@ -1,3 +1,8 @@
+> **Status: Reference — README draft + coaching**
+> This document is a raw chat export that contains an early README draft and strategic framing advice. It is not the canonical README. For the current README, see [README.md](README.md). For operational governance, see [AGENTS.md](AGENTS.md).
+
+---
+
 README cleanup + AGENTS.md
 
 Absolutely. And that framing is actually smart.

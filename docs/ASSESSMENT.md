@@ -154,11 +154,11 @@ The root README.md is about parameter golf. The docs/README.md is about cognitiv
 
 Before starting implementation, resolve these items:
 
-- [ ] **Fix Installation.md** — Update all script names to match canonical map (with `scripts/` prefix)
-- [ ] **Fix docs/README.md** — Align directory structure diagram with canonical `data/v1/`, `data/v2/` layout; fix script name references
-- [ ] **Create directory skeleton** — `scripts/`, `data/v1/`, `data/v2/`, `runs/v1/`, `paired_v2_runs/`, `plots/v1/`, `plots/v2/`, `forest_plots_corrected/`
-- [ ] **Add .gitkeep files** to empty directories so they persist in git
-- [ ] **Add header notes** to raw chat exports (Teardown.md, Experiments to test.md, README-ai.md) marking them as reference material vs. actionable specs
+- [x] **Fix Installation.md** — Update all script names to match canonical map (with `scripts/` prefix)
+- [x] **Fix docs/README.md** — Align directory structure diagram with canonical `data/v1/`, `data/v2/` layout; fix script name references
+- [x] **Create directory skeleton** — `scripts/`, `data/v1/`, `data/v2/`, `runs/v1/`, `paired_v2_runs/`, `plots/v1/`, `plots/v2/`, `forest_plots_corrected/`
+- [x] **Add .gitkeep files** to empty directories so they persist in git
+- [x] **Add header notes** to raw chat exports (Teardown.md, Experiments to test.md, README-ai.md) marking them as reference material vs. actionable specs
 
 ---
 
