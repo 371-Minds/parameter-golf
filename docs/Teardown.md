@@ -1,3 +1,8 @@
+> **Status: Reference — conceptual background**
+> This document is a raw chat export preserved for its conceptual content. It is not an actionable spec. For build-ready specifications, see the documents marked ✅ in [ASSESSMENT.md](ASSESSMENT.md).
+
+---
+
 Yes — I think cognitive load theory is a very useful lens here, even if we have to translate it carefully from humans to transformers.
 
 And for parameter golf, it may actually be one of the best conceptual lenses.
