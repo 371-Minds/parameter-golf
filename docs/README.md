@@ -1,106 +1,174 @@
-# Tiny LLM Cognitive Load Benchmarks
+# Cognitive Load Benchmarks for LLMs
 
-A benchmark suite for testing whether tiny language models exhibit structured overload effects analogous to cognitive load phenomena in humans.
+A benchmark suite and analysis pipeline for testing whether language models exhibit **bounded-capacity failure patterns analogous to cognitive overload**.
 
-## Overview
+This repository studies whether LLM behavior changes systematically when we manipulate:
 
-This project investigates the idea that small language models fail not only because they know less, but because they can coordinate fewer active dependencies, are more vulnerable to interference, and benefit more from structured presentation.
+- **structure vs. flat presentation**
+- **intrinsic relational complexity**
+- **extraneous distractor interference**
+- **constraint density**
 
-We evaluate four dimensions:
+The core claim is not that LLMs “feel” cognitive load in a human sense, but that they may behave like **capacity-limited information processors** whose performance degrades in structured, measurable ways when task demands exceed effective representational bandwidth.
 
-- **Constraint Stacking**  
-  Can the model satisfy multiple simultaneous rules at once?
+## Core idea
 
-- **Extraneous Load**  
-  How much does irrelevant, confusable, or contradictory information impair performance?
+Cognitive Load Theory separates load into:
 
-- **Chunking Benefit**  
-  Does equivalent information become easier when grouped or structured?
+- **Intrinsic load**: complexity inherent to the task
+- **Extraneous load**: irrelevant or badly presented information that interferes
+- **Germane load**: useful organization that helps schema formation
 
-- **Element Interactivity**  
-  Are tightly coupled facts harder than equally numerous independent facts?
+This repository operationalizes that frame for LLM evaluation.
 
-The core hypothesis is that tiny models behave like bounded-capacity processors with structured failure modes under load.
+We test whether models show signatures like:
 
-## Why this matters
+- better performance when information is **chunked**
+- worse performance when relational coupling is **high**
+- disproportionate degradation from **confusable** or **contradictory** distractors
+- threshold-like collapse under increased **constraint stacking**
 
-This benchmark is designed for:
+## Repository goals
 
-- evaluating tiny or compressed language models
-- testing hypotheses about capacity limits
-- studying interference and prompt organization effects
-- comparing model robustness under increasing dependency burden
-- informing architecture choices for parameter-constrained systems
+This project is built to support three use cases:
 
-This is especially relevant for:
-- edge models
-- tiny transformers
-- distilled systems
-- parameter-golf style challenges
-- highly compressed reasoning systems
+1. **Scientific testing**
+   - Do small or weak models exhibit overload-like failure modes?
+
+2. **Model comparison**
+   - Which models are more robust to poor structure, distractors, or coupling?
+
+3. **Design insight**
+   - What prompt/model/task properties reduce avoidable processing burden?
 
 ## Benchmark families
 
-### 1. Constraint Stacking
+### V1 benchmark families
 
-The model must produce an answer satisfying several simultaneous constraints, such as:
+These are non-paired synthetic benchmarks with condition-level comparisons.
 
-- a character at a specific position
-- inclusion of a required symbol
-- exact digit count
-- ordering constraints
-- distinctness constraints
+#### 1. Constraint Stacking
+Tests whether accuracy degrades as the number of simultaneously active constraints increases.
 
-This probes coordination under concurrent rule pressure.
+Expected pattern:
+- performance falls as constraint count rises
+- small models collapse faster
+- failures become structured, not random
 
-### 2. Extraneous Load
+#### 2. Extraneous Load
+Tests whether extra information harms performance differently depending on distractor type.
 
-The model answers a simple question from a context that also contains distractors. Distractors vary by:
+Conditions may include:
+- irrelevant filler
+- confusable distractors
+- contradictory distractors
 
-- count
-- similarity to target facts
-- contradiction level
-- placement near relevant content
+Expected pattern:
+- confusable or contradictory distractors hurt more than harmless filler
 
-This probes interference sensitivity.
+#### 3. Chunking
+Tests whether grouping information into digestible structure improves performance compared with flat presentation.
 
-### 3. Chunking
+Expected pattern:
+- chunked formatting improves outcomes
+- smaller models benefit more
 
-The same latent information is presented in two forms:
+#### 4. Element Interactivity
+Tests whether tasks with stronger dependency coupling are harder than tasks with similar surface length but weaker coupling.
 
-- flat/unstructured
-- grouped/chunked
+Expected pattern:
+- high interactivity produces sharper degradation than low interactivity
 
-The task stays constant. This probes whether structure reduces effective load.
+## V2 paired benchmark families
 
-### 4. Element Interactivity
+These are the stronger causal-design benchmarks.
 
-The model answers questions based on either:
+Instead of comparing broad condition averages across unrelated samples, V2 creates **matched item sets** where the same underlying task is presented in multiple variants.
 
-- independent facts
-- interdependent fact chains
+This allows **within-item paired effect estimation**.
 
-This probes whether coupling is harder than raw quantity alone.
+### 1. `chunking_v2`
+Same underlying task:
+- `flat`
+- `chunked`
 
-## Core hypotheses
+Primary paired effect:
 
-We test the following predictions:
+$$
+\Delta_{\text{chunk}} = \mathbb{E}[\text{chunked correct} - \text{flat correct}]
+$$
 
-1. **Constraint overload:** exact accuracy falls sharply as simultaneous constraints increase.
-2. **Interference-sensitive distraction:** confusable distractors hurt more than irrelevant ones.
-3. **Chunking benefit:** grouped information improves performance without changing content.
-4. **Element interactivity penalty:** tightly coupled facts are harder than equally numerous independent facts.
-5. **Capacity-scaling effect:** smaller models collapse earlier and more steeply.
+Interpretation:
+- positive values mean structure helps
+
+### 2. `element_interactivity_v2`
+Same underlying task:
+- `low`
+- `high`
+
+Primary paired effect:
+
+$$
+\Delta_{\text{interactivity}} = \mathbb{E}[\text{low correct} - \text{high correct}]
+$$
+
+Interpretation:
+- positive values mean high relational coupling hurts performance
+
+### 3. `extraneous_load_v2`
+Same underlying task with different distractor regimes:
+- `irrelevant`
+- `confusable`
+- `contradictory_adjacent`
+
+Primary paired effects:
+
+$$
+\Delta_{ir-conf} = \mathbb{E}[\text{irrelevant correct} - \text{confusable correct}]
+$$
+
+$$
+\Delta_{ir-contra} = \mathbb{E}[\text{irrelevant correct} - \text{contradictory\_adjacent correct}]
+$$
+
+$$
+\Delta_{conf-contra} = \mathbb{E}[\text{confusable correct} - \text{contradictory\_adjacent correct}]
+$$
+
+Interpretation:
+- positive values mean the second condition is more harmful
 
 ## Repository structure
 
+Example structure:
+
 ```text
 .
-├── generate_datasets.py
-├── run_benchmark.py
-├── evaluate.py
-├── plot_overload.py
-├── orchestrate_benchmarks.py
-├── plot_comparison.py
-├── README.md
-└── data/
+├── data/
+│   ├── constraint_stacking_train.jsonl
+│   ├── constraint_stacking_val.jsonl
+│   ├── constraint_stacking_test.jsonl
+│   ├── extraneous_load_train.jsonl
+│   ├── chunking_train.jsonl
+│   ├── element_interactivity_train.jsonl
+│   ├── chunking_v2_test.jsonl
+│   ├── extraneous_load_v2_test.jsonl
+│   └── element_interactivity_v2_test.jsonl
+├── scripts/
+│   ├── generate_benchmarks.py
+│   ├── evaluate_predictions.py
+│   ├── plot_results.py
+│   ├── run_model_openai_compatible.py
+│   ├── multi_model_orchestrator.py
+│   ├── comparison_plotter.py
+│   ├── paired_orchestrate_v2.py
+│   ├── paired_comparison_plotter.py
+│   ├── cross_model_significance.py
+│   ├── cross_model_permutation.py
+│   ├── cross_model_permutation_corrected.py
+│   └── forest_plot_corrected.py
+├── runs/
+├── paired_v2_runs/
+├── plots/
+├── paired_plots/
+└── README.md
