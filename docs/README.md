@@ -140,24 +140,25 @@ Interpretation:
 
 ## Repository structure
 
-Example structure:
+Canonical structure (see also `Canonical repo file map.md`):
 
 ```text
 .
 ├── data/
-│   ├── constraint_stacking_train.jsonl
-│   ├── constraint_stacking_val.jsonl
-│   ├── constraint_stacking_test.jsonl
-│   ├── extraneous_load_train.jsonl
-│   ├── chunking_train.jsonl
-│   ├── element_interactivity_train.jsonl
-│   ├── chunking_v2_test.jsonl
-│   ├── extraneous_load_v2_test.jsonl
-│   └── element_interactivity_v2_test.jsonl
+│   ├── v1/
+│   │   ├── constraint_stacking_{train,val,test}.jsonl
+│   │   ├── extraneous_load_{train,val,test}.jsonl
+│   │   ├── chunking_{train,val,test}.jsonl
+│   │   └── element_interactivity_{train,val,test}.jsonl
+│   └── v2/
+│       ├── chunking_v2_test.jsonl
+│       ├── extraneous_load_v2_test.jsonl
+│       └── element_interactivity_v2_test.jsonl
 ├── scripts/
-│   ├── generate_benchmarks.py
+│   ├── generate_v1_benchmarks.py
+│   ├── generate_v2_benchmarks.py
 │   ├── evaluate_predictions.py
-│   ├── plot_results.py
+│   ├── plot_v1_results.py
 │   ├── run_model_openai_compatible.py
 │   ├── multi_model_orchestrator.py
 │   ├── comparison_plotter.py
@@ -168,7 +169,10 @@ Example structure:
 │   ├── cross_model_permutation_corrected.py
 │   └── forest_plot_corrected.py
 ├── runs/
+│   └── v1/
 ├── paired_v2_runs/
 ├── plots/
-├── paired_plots/
+│   ├── v1/
+│   └── v2/
+├── forest_plots_corrected/
 └── README.md

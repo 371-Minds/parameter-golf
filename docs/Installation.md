@@ -9,12 +9,12 @@ pip install matplotlib
 Quickstart
 1. Generate datasets
 
-python generate_datasets.py
+python scripts/generate_v1_benchmarks.py
 
 2. Run a model on one benchmark
 
-python run_benchmark.py \
-  --input constraint_stacking_test.jsonl \
+python scripts/run_model_openai_compatible.py \
+  --dataset data/v1/constraint_stacking_test.jsonl \
   --output cs_preds.jsonl \
   --model route-llm \
   --api-key YOUR_API_KEY \
@@ -24,31 +24,34 @@ python run_benchmark.py \
 
 3. Evaluate predictions
 
-python evaluate.py \
-  --gold constraint_stacking_test.jsonl \
-  --pred cs_preds.jsonl \
-  --out cs_summary.json
+python scripts/evaluate_predictions.py \
+  --dataset data/v1/constraint_stacking_test.jsonl \
+  --predictions cs_preds.jsonl \
+  --output cs_summary.json
 
 4. Plot overload curves
 
-python plot_overload.py --cs cs_summary.json --failures
+python scripts/plot_v1_results.py --input cs_summary.json
 
 Multi-model experiments
 Run several models across several benchmarks:
 
-python orchestrate_benchmarks.py \
-  --benchmarks constraint_stacking_test.jsonl extraneous_load_test.jsonl chunking_test.jsonl element_interactivity_test.jsonl \
+python scripts/multi_model_orchestrator.py \
+  --datasets \
+    data/v1/constraint_stacking_test.jsonl \
+    data/v1/extraneous_load_test.jsonl \
+    data/v1/chunking_test.jsonl \
+    data/v1/element_interactivity_test.jsonl \
   --models route-llm gpt-4o-mini \
   --api-key YOUR_API_KEY \
   --base-url https://routellm.abacus.ai/v1 \
   --temperature 0 \
   --max-tokens 32 \
-  --save-preds \
-  --out comparison.json
+  --output-dir runs/v1
 
 Then compare results visually:
 
-python plot_comparison.py --input comparison.json
+python scripts/comparison_plotter.py --input runs/v1/comparison.json --output-dir plots/v1
 
 Metrics
 Primary metrics:
